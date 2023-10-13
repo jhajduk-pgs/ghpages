@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
 
 jobs:
   build-and-deploy:
@@ -26,9 +28,6 @@ jobs:
           npm ci
           npm run build
 
-#      - name: Setup Pages
-#        uses: actions/configure-pages@v3
-#
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
@@ -42,3 +41,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           folder: dist # The folder the action should deploy.
           target-folder: ${{ env.BUILD_ID }}
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
