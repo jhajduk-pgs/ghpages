@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v3
 
       - run: |
-          echo "PACKAGE_JSON=$(cat package.json)" >> $GITHUB_ENV
+          echo "package_json=$(cat package.json)" >> $GITHUB_OUTPUT
 
       - name: Print id
         run: echo ${{ env.BUILD_ID }}
@@ -35,7 +35,7 @@ jobs:
 
       - name: Update dist path with version
         run: |
-          echo ${{ steps.packagejson.outputs.contents }}
+          echo ${{ outputs.package_json }}
           echo DIST_PATH=/v/$(echo 'elo' )
 
 #      - name: Deploy 🚀
