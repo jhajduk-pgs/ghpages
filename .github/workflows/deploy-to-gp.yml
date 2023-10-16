@@ -35,8 +35,10 @@ jobs:
 
       - name: Update dist path with version
         run: |
-          echo ${{ outputs.package_json }}
-          echo DIST_PATH=/v/$(echo 'elo' )
+          echo ${{ steps }} 
+          echo ${{ jobs }}
+#          echo ${{ steps.outputs.package_json }}
+#          echo DIST_PATH=/v/$(echo 'elo' )
 
 #      - name: Deploy 🚀
 #        uses: JamesIves/github-pages-deploy-action@v4
