@@ -22,10 +22,8 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - id: packagejson
-        run: |
-          json=$( cat package.json  )
-          echo "contents=$json" >> $GITHUB_OUTPUT
+      - run: |
+          echo "PACKAGE_JSON=$(cat package.json)" >> $GITHUB_ENV
 
       - name: Print id
         run: echo ${{ env.BUILD_ID }}
