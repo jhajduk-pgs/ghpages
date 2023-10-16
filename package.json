@@ -1,8 +1,0 @@
-{
-  "name": "ghpages",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github-pgs:jhajduk-pgs/ghpages.git",
-  "author": "Jakub Hajduk (PGS Software) <jhajduk@pgs-soft.com>",
-  "license": "MIT"
-}
