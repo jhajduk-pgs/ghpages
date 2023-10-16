@@ -22,6 +22,9 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
+      - id: package
+        run: cat package.json
+
       - name: Print id
         run: echo ${{ env.BUILD_ID }}
 
@@ -32,7 +35,8 @@ jobs:
 
       - name: Update dist path with version
         run: |
-          echo ${{ fromJson($(cat package.json)).version }}
+          cat package.json
+          echo ${{ fromJson(package).version }}
           echo DIST_PATH=/v/$(echo 'elo' )
 
 #      - name: Deploy 🚀
