@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUILD_ID: build-${{ github.run_id }}-${{ github.run_attempt }}
+      DIST_PATH: /
 
     steps:
       - name: Checkout 🛎️
@@ -24,9 +25,22 @@ jobs:
       - name: Print id
         run: echo ${{ env.BUILD_ID }}
 
-      - name: Alternative gh-pages update
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
-          git worktree add --checkout pages-deploy origin/gh-pages
-          cd pages-deploy
-          ls -a
-          cd ..
+          npm ci
+          npm run build
+
+      - name: Update dist path with version
+        run: |
+          echo ${{ fromJson($(cat package.json).version }}
+          echo DIST_PATH=/v/$(echo 'elo' )
+
+#      - name: Deploy 🚀
+#        uses: JamesIves/github-pages-deploy-action@v4
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          folder: dist # The folder the action should deploy.
+#          target-folder: v/${{ env.BUILD_ID }}
+#          CLEAN: true # Automatically remove deleted files from the deploy branch
+#          CLEAN_EXCLUDE: [ 'v' ]
+
