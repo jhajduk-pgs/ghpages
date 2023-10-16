@@ -43,5 +43,5 @@ jobs:
           folder: dist # The folder the action should deploy.
           target-folder: ${{ env.DIST_PATH }}
           CLEAN: true # Automatically remove deleted files from the deploy branch
-          CLEAN_EXCLUDE: ["v"]
+          CLEAN_EXCLUDE: '["v"]'
 
