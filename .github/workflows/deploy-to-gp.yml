@@ -36,22 +36,22 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deploy main 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          folder: dist
-          target-folder: /
-          CLEAN: true
-          CLEAN_EXCLUDE: '["v"]'
-
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           folder: dist # The folder the action should deploy.
           target-folder: ${{ env.DIST_PATH }}
-          CLEAN: true # Automatically remove deleted files from the deploy branch
-          CLEAN_EXCLUDE: '["v"]'
+          clean: true # Automatically remove deleted files from the deploy branch
+          clean-exclude: '["v"]'
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: dist # The folder the action should deploy.
+          target-folder: /
+          clean: true # Automatically remove deleted files from the deploy branch
+          clean-exclude: '["v"]'
 
 
