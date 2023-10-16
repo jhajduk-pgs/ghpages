@@ -24,7 +24,7 @@ jobs:
 
       - id: packagejson
         run: |
-          json='{ "d": "upa"}'
+          json=$( echo '{"d": "upa"}'  )
           echo "::set-output name=contents::$json"
 
       - name: Print id
