@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync } from 'fs'
 
 const pkg = JSON.parse( readFileSync('./package.json') )
 
@@ -17,4 +17,5 @@ const template = (title = 'Title', body = 'elo') => `<!doctype html>
 </body>
 </html>`;
 
+mkdirSync('./dist')
 writeFileSync('./dist/index.html', template(`Version ${ pkg.version }`, `${ pkg.name } by ${ pkg.author } in ${ pkg.version }. Cheers!`), 'utf-8')
