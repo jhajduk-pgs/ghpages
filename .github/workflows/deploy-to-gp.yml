@@ -24,7 +24,7 @@ jobs:
 
       - id: 'package_json'
         run: |
-          echo "contents=$(cat package.json)" >> "$GITHUB_OUTPUT"
+          echo "contents='$(cat package.json)'" >> "$GITHUB_OUTPUT"
 
       - name: Print id
         run: echo ${{ env.BUILD_ID }}
