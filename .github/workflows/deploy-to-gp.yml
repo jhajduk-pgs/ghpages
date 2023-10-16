@@ -45,3 +45,12 @@ jobs:
           CLEAN: true # Automatically remove deleted files from the deploy branch
           CLEAN_EXCLUDE: '["v"]'
 
+      - name: Deploy main 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: dist
+          target-folder: /
+          CLEAN: true
+          CLEAN_EXCLUDE: '["v"]'
+
