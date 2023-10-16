@@ -35,8 +35,7 @@ jobs:
 
       - name: Update dist path with version
         run: |
-          echo ${{ steps }} 
-          echo ${{ jobs }}
+          echo ${{ steps }}
 #          echo ${{ steps.outputs.package_json }}
 #          echo DIST_PATH=/v/$(echo 'elo' )
 
