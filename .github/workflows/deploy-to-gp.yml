@@ -34,9 +34,10 @@ jobs:
           npm run build
 
       - name: Update dist path with version
-        run: |
-          echo "DIST_PATH=/v/${{ fromJson(steps.package_json.outputs.contents).version }}" >> $GITHUB_ENV
-          echo ${{ env.DIST_PATH }}
+        run: echo DIST_PATH=/v/${{ fromJson(steps.package_json.outputs.contents).version }} >> $GITHUB_ENV
+
+      - name: Elo
+        run: echo ${{ env.DIST_PATH }}
 
 
 #      - name: Deploy 🚀
