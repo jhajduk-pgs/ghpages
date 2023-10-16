@@ -24,7 +24,7 @@ jobs:
 
       - id: packagejson
         run: |
-          json=$( echo '{"d": "upa"}'  )
+          json=$( cat package.json  )
           echo "::set-output name=contents::$json"
 
       - name: Print id
@@ -37,7 +37,6 @@ jobs:
 
       - name: Update dist path with version
         run: |
-          cat package.json
           echo ${{ steps.packagejson.outputs.contents }}
           echo DIST_PATH=/v/$(echo 'elo' )
 
