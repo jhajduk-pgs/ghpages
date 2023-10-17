@@ -1,14 +1,10 @@
 name: Build and Deploy
 on:
   push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   build-and-deploy:
@@ -21,6 +17,7 @@ jobs:
       DEPLOY_BRANCH: gh-pages-deploy/${{ github.run_id }}-${{ github.run_attempt }}
       BUILD_PATH: dist
       GHP_TEMP_PATH: ghp-temp
+      MODE: preview
 
     steps:
       - name: Dump github
@@ -33,6 +30,10 @@ jobs:
 
       - id: 'package_json'
         run: echo contents=$(cat package.json) >> $GITHUB_OUTPUT
+
+      - name: Update mode
+        if: ${{ github.ref_name === 'main' || github.ref_name === 'next' }}
+        run: echo MODE=docs >> $GITHUB_ENV
 
       - name: Update dist path with version
         run: echo DIST_PATH=/v/${{ fromJson(steps.package_json.outputs.contents).version }} >> $GITHUB_ENV
@@ -54,14 +55,17 @@ jobs:
           ls -a
 
       - name: Update main docs
+        if: ${{ env.MODE === 'docs' }}
         run: |
-          rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP_PATH }} --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
-          cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP_PATH }}/${{ env.DIST_PATH }}
-          tree
+          echo docs
+#          rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP_PATH }} --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+#          cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP_PATH }}/${{ env.DIST_PATH }}
+#          tree
 
       - name: Update preview
+        if: ${{ env.MODE === 'preview' }}
         run: |
-          echo siema
+          echo preview
 
       - name: Deploy updated pages to GH Pages
         run: |
