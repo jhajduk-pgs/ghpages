@@ -9,15 +9,8 @@ env:
 
 runs:
   using: 'composite'
-
-
+  
   steps:
-    - name: Dump github
-      env:
-        GITHUB_ACTION: ${{ toJson(action) }}
-      shell: bash
-      run: echo "$GITHUB_ACTION"
-
     - name: Prepare environment for gh-pages deployment
       shell: bash
       run: |
