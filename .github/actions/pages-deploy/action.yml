@@ -40,10 +40,12 @@ inputs:
     description: Commands to run after fetching gh-pages branch
     required: true
     default: echo 'No commands!'
+
   temp-dir:
     description: name of the temporary directory
     required: true
     default: 'ghp-temp'
+
   deploy-branch:
     description: "Branch to deploy. (defalut: gh-pages)"
     required: true

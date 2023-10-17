@@ -24,7 +24,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - id: 'package_json'
         run: echo contents=$(cat package.json) >> $GITHUB_OUTPUT
@@ -38,7 +38,8 @@ jobs:
 #          npm run build:docs
 
       - name: Deploy
-        uses: ../actions/pages-deploy
+        run: tree
+        uses: ./github/actions/pages-deploy
         with:
           commands: |
             echo test
