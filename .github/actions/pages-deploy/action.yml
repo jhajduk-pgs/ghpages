@@ -14,9 +14,37 @@ runs:
   steps:
     - name: Dump github
       env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
+        GITHUB_ACTION: ${{ toJson(action) }}
       shell: bash
-      run: echo "$GITHUB_CONTEXT"
+      run: echo "$GITHUB_ACTION"
+
+    - name: Prepare environment for gh-pages deployment
+      shell: bash
+      run: |
+        git init 
+        git config user.name "GH Pages Deployer"
+        git config user.email "ghp-deployer@noreply.com"
+        git remote rm origin
+        git remote add origin ${{ env.REPOSITORY_PATH }}
+        git fetch
+        git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
+
+    - name: Update main docs
+      shell: bash
+      run: echo ${{ env.BIBO }}
+
+    - name: Deploy updated pages to GH Pages
+      shell: bash
+      run: |
+        cd ${{ inputs.temp-dir }}
+        tree
+        git status --porcelain
+        git add --all .
+        git checkout -b ${{ inputs.deploy-branch }}
+        git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
+        git push --force ${{ env.REPOSITORY_PATH }} ${{ inputs.deploy-branch }}:gh-pages
+        cd ..
+        git worktree remove ${{ inputs.temp-dir }} --force
 
 inputs:
   commands:
