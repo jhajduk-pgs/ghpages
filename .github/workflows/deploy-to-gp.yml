@@ -19,6 +19,9 @@ jobs:
       DIST_PATH: /
 
     steps:
+      - name: Dump github
+        run: ${{ toJson(github) }}
+
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
@@ -36,22 +39,50 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          folder: dist # The folder the action should deploy.
-          target-folder: ${{ env.DIST_PATH }}
-          clean: true # Automatically remove deleted files from the deploy branch
-          clean-exclude: '["v"]'
+      - name: Custom git fetch
+        run: |
+          git init 
+          git config user.name "Jan Kaczan"
+          git config user.email "jan@kaczan.eu"
+          git remote remove origin
+          git remote add git@github.com:jhajduk-pgs/ghpages.git
+          git fetch
+          git worktree add --checkout ghp-temp origin/gh-pages
+          ls -a
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          folder: dist # The folder the action should deploy.
-          target-folder: /
-          clean: true # Automatically remove deleted files from the deploy branch
-          clean-exclude: '["v"]'
+      - name: Update main docs
+        run: |
+          rsync -q -av --checksum --progress dist ghp-temp --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+          cp dist ghp-temp/${{ env.DIST_PATH }}
+          ls -a
+          cd ghp-temp
+          ls -a
+          cd v
+          ls -a
+          
+
+      - name: Update preview
+        run: |
+          echo siema
+          
+          
+
+#      - name: Deploy 🚀
+#        uses: JamesIves/github-pages-deploy-action@v4
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          folder: dist # The folder the action should deploy.
+#          target-folder: ${{ env.DIST_PATH }}
+#          clean: true # Automatically remove deleted files from the deploy branch
+#          clean-exclude: '["v"]'
+#
+#      - name: Deploy 🚀
+#        uses: JamesIves/github-pages-deploy-action@v4
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          folder: dist # The folder the action should deploy.
+#          target-folder: /
+#          clean: true # Automatically remove deleted files from the deploy branch
+#          clean-exclude: '["v"]'
 
 
