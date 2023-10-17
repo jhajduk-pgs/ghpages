@@ -5,7 +5,8 @@
   "type": "module",
   "repository": "git@github-pgs:jhajduk-pgs/ghpages.git",
   "scripts": {
-    "build:docs": "node build.mjs"
+    "build:docs": "node build.mjs",
+    "build:preview": "node preview.mjs"
   },
   "author": "Jakub Hajduk (PGS Software) <jhajduk@pgs-soft.com>",
   "license": "MIT"

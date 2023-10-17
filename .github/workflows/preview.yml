@@ -10,14 +10,6 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-      DIST_PATH: /
-      REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
-      DEPLOY_BRANCH: gh-pages-deploy/${{ github.run_id }}-${{ github.run_attempt }}
-      BUILD_PATH: dist
-      GHP_TEMP_PATH: ghp-temp
-      MODE: preview
 
     steps:
       - name: Dump github
@@ -28,42 +20,15 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - id: 'package_json'
-        run: echo contents=$(cat package.json) >> $GITHUB_OUTPUT
-
-      - name: Update dist path with version
-        run: echo DIST_PATH=/v/${{ fromJson(steps.package_json.outputs.contents).version }} >> $GITHUB_ENV
-
       - name: Install and build docs
         run: |
           npm ci
           npm run build:preview
 
-      - name: Prepare environment for gh-pages deployment
-        run: |
-          git init 
-          git config user.name "GH Pages Deployer"
-          git config user.email "ghp-deployer@noreply.com"
-          git remote rm origin
-          git remote add origin ${{ env.REPOSITORY_PATH }}
-          git fetch
-          git worktree add --checkout ${{ env.GHP_TEMP_PATH }} origin/gh-pages
-
-      - name: Update preview
-        run: |
-          echo preview
-
-      - name: Deploy updated pages to GH Pages
-        run: |
-          cd ${{ env.GHP_TEMP_PATH }}
-          tree
-          git status --porcelain
-          git add --all .
-          git checkout -b ${{ env.DEPLOY_BRANCH }}
-          git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
-          git push --force ${{ env.REPOSITORY_PATH }} ${{ env.DEPLOY_BRANCH }}:gh-pages
-          cd ..
-          git worktree remove ${{ env.GHP_TEMP_PATH }} --force
-        
-
+      - name: Deploy
+        uses: ./.github/actions/pages-deploy
+        with:
+          temp-dir: ${{ env.GHP_TEMP_PATH }}
+          commands: |
+            cp -r preview/. ghp-temp/${{ github.ref_name }}
 
