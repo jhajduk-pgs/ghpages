@@ -4,13 +4,17 @@ author: Jakub Hajduk <jakub.hajduk@xebia.com>
 branding:
   color: 'purple'
 
-env:
-  ACTION_REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+
 
 runs:
   using: 'composite'
 
   steps:
+    - name: setup variables
+      env:
+        PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+      run: echo repository_path=$PATH >> $GITHUB_ENV
+
     - name: Prepare environment for gh-pages deployment
       shell: bash
       run: |
@@ -24,7 +28,7 @@ runs:
 
     - name: Update main docs
       shell: bash
-      run: echo ${{ env.BIBO }}
+      run: echo ${{ env.repository_path }}
 
     - name: Deploy updated pages to GH Pages
       shell: bash
