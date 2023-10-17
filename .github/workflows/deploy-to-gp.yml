@@ -67,7 +67,9 @@ jobs:
 
       - name: Push to gh-pages
         run: |
+          tree
           cd ghp-temp
+          tree
           git status --porcelain
           git add --all .
           git checkout -b ${{ env.DEPLOY_BRANCH }}
