@@ -58,7 +58,7 @@ jobs:
       - name: Update main docs
         run: |
           rsync -q -av --checksum --progress dist/ ghp-temp --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
-          cp -r dist/ ghp-temp/${{ env.DIST_PATH }}
+          cp -r dist/. ghp-temp/${{ env.DIST_PATH }}
           tree
 
       - name: Update preview
