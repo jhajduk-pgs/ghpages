@@ -10,14 +10,17 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      PACKAGE_JSON: contents=$(cat package.json) >> $GITHUB_OUTPUT
-      DIST_PATH: /v/${{ fromJson(steps.package_json.outputs.contents).version }}
       BUILD_PATH: dist
       GHP_TEMP_PATH: ghp-temp
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - id: pkg
+        uses: ./.github/actions/package-json
+
+      - run: echo ${{ fromJson(steps.pkg.outputs.contents).version }}
 
       - name: Install and build docs
         run: |
@@ -30,4 +33,4 @@ jobs:
           temp-dir: ${{ env.GHP_TEMP_PATH }}
           commands: |
             rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP_PATH }} --delete --exclude v --exclude preview --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
-            cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP_PATH }}/${{ env.DIST_PATH }}
+            cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP_PATH }}/v/${{ fromJson(steps.pkg.outputs.contents).version }}

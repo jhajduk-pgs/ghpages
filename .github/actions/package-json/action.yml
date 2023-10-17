@@ -1,0 +1,15 @@
+name: package.json info
+description: Fetch data from package.json file
+author: Jakub Hajduk <jakub.hajduk@xebia.com>
+branding:
+  color: 'purple'
+
+runs:
+  using: 'composite'
+
+  steps:
+    - id: 'package_json'
+      run: echo contents=$(cat package.json) >> $GITHUB_OUTPUT
+
+outputs:
+  contents: ''
