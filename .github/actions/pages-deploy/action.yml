@@ -11,6 +11,7 @@ runs:
 
   steps:
     - name: setup variables
+      shell: bash
       env:
         PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
       run: echo repository_path=$PATH >> $GITHUB_ENV
