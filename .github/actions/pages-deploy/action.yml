@@ -8,15 +8,12 @@ branding:
 
 runs:
   using: 'composite'
+  env:
+    REPO_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+    HELLO: moto
+  shell: bash
 
   steps:
-    - name: setup variables
-      env:
-        REPO_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
-        HELLO: moto
-      shell: bash
-      run: echo Set up
-
     - name: Prepare environment for gh-pages deployment
       shell: bash
       run: |
