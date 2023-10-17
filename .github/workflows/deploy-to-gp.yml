@@ -15,8 +15,10 @@ jobs:
 #    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
     env:
-      BUILD_ID: build-${{ github.run_id }}-${{ github.run_attempt }}
+      BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
       DIST_PATH: /
+      REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+      DEPLOY_BRANCH: gh-pages-deploy/${{ env.BUILD_ID }}
 
     steps:
       - name: Dump github
@@ -48,7 +50,7 @@ jobs:
           git config user.name "Jan Kaczan"
           git config user.email "jan@kaczan.eu"
           git remote rm origin
-          git remote add origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+          git remote add origin ${{ env.REPOSITORY_PATH }}
           git fetch
           git worktree add --checkout ghp-temp origin/gh-pages
           ls -a
@@ -57,20 +59,24 @@ jobs:
         run: |
           rsync -q -av --checksum --progress dist ghp-temp --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
           cp -r dist ghp-temp/${{ env.DIST_PATH }}
-          ls -a
-          echo 'list ghp-temp'
           cd ghp-temp
-          ls -a
-          echo 'list ghp-temp/v'
-          cd v
-          ls -a
           
 
       - name: Update preview
         run: |
           echo siema
-          
-          
+
+      - name: Push to gh-pages
+        run: |
+          git status --porcelain
+          git add --all .
+          git checkout -b ${{ env.DEPLOY_BRANCH }}
+          git commit -m "Deploying from ${{ env.GITHUB_REPOSITORY }} @ ${{ env.GITHUB_SHA }} --quiet --no-verify
+          git push --force ${{ env.REPOSITORY_PATH }} ${{ env.DEPLOY_BRANCH }}:gh-pages
+          cd ..
+          git worktree remove ghp-temp --force
+
+
 
 #      - name: Deploy 🚀
 #        uses: JamesIves/github-pages-deploy-action@v4
