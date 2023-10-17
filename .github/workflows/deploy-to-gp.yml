@@ -20,7 +20,7 @@ jobs:
       REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
       DEPLOY_BRANCH: gh-pages-deploy/${{ github.run_id }}-${{ github.run_attempt }}
       BUILD_PATH: dist
-      GPH_TEMP_PATH: ghp-temp
+      GHP_TEMP_PATH: ghp-temp
 
     steps:
       - name: Dump github
@@ -50,13 +50,13 @@ jobs:
           git remote rm origin
           git remote add origin ${{ env.REPOSITORY_PATH }}
           git fetch
-          git worktree add --checkout ${{ env.GHP_TEMP }} origin/gh-pages
+          git worktree add --checkout ${{ env.GHP_TEMP_PATH }} origin/gh-pages
           ls -a
 
       - name: Update main docs
         run: |
-          rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP }} --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
-          cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP }}/${{ env.DIST_PATH }}
+          rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP_PATH }} --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+          cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP_PATH }}/${{ env.DIST_PATH }}
           tree
 
       - name: Update preview
@@ -65,7 +65,7 @@ jobs:
 
       - name: Deploy updated pages to GH Pages
         run: |
-          cd ${{ env.GHP_TEMP }}
+          cd ${{ env.GHP_TEMP_PATH }}
           tree
           git status --porcelain
           git add --all .
@@ -73,6 +73,7 @@ jobs:
           git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
           git push --force ${{ env.REPOSITORY_PATH }} ${{ env.DEPLOY_BRANCH }}:gh-pages
           cd ..
-          git worktree remove ${{ env.GHP_TEMP }} --force
+          git worktree remove ${{ env.GHP_TEMP_PATH }} --force
+        
 
 
