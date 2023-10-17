@@ -9,8 +9,11 @@ runs:
 
   steps:
     - name: Get data
+      id: pkg
       run: echo contents=$(cat package.json) >> $GITHUB_OUTPUT
       shell: bash
 
 outputs:
-  contents: ''
+  contents:
+    description: "package.json contents"
+    value: ${{ steps.pkg.outputs.contents }}
