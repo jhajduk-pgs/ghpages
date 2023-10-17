@@ -4,11 +4,12 @@ author: Jakub Hajduk <jakub.hajduk@xebia.com>
 branding:
   color: 'purple'
 
+env:
+  BIBO: 'hello'
+
 runs:
   using: 'composite'
 
-  env:
-    - BIBO: 'hello'
 
   steps:
     - name: Dump github
