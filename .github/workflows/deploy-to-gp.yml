@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Dump github
-        run: ${{ toJson(github) }}
+        run: echo ${{ toJson(github) }}
 
       - name: Checkout 🛎️
         uses: actions/checkout@v3
