@@ -1,11 +1,11 @@
 {
   "name": "ghpages",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "main": "index.js",
   "type": "module",
   "repository": "git@github-pgs:jhajduk-pgs/ghpages.git",
   "scripts": {
-    "build": "node build.mjs"
+    "build:docs": "node build.mjs"
   },
   "author": "Jakub Hajduk (PGS Software) <jhajduk@pgs-soft.com>",
   "license": "MIT"
