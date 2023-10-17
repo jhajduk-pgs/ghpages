@@ -31,5 +31,5 @@ jobs:
         with:
           temp-dir: ghp-temp
           commands: |
-            cp -r preview/. ghp-temp/${{ github.ref_name.replaceAll('/', '-') }}
+            cp -r preview/. ghp-temp/${{ github.ref_name }}
             tree
