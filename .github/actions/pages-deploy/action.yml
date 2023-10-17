@@ -5,11 +5,11 @@ branding:
   color: 'purple'
 
 env:
-  BIBO: 'hello'
+  ACTION_REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
 
 runs:
   using: 'composite'
-  
+
   steps:
     - name: Prepare environment for gh-pages deployment
       shell: bash
@@ -18,7 +18,7 @@ runs:
         git config user.name "GH Pages Deployer"
         git config user.email "ghp-deployer@noreply.com"
         git remote rm origin
-        git remote add origin ${{ env.REPOSITORY_PATH }}
+        git remote add origin ${{ env.ACTION_REPOSITORY_PATH }}
         git fetch
         git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
 
@@ -35,7 +35,7 @@ runs:
         git add --all .
         git checkout -b ${{ inputs.deploy-branch }}
         git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
-        git push --force ${{ env.REPOSITORY_PATH }} ${{ inputs.deploy-branch }}:gh-pages
+        git push --force ${{ env.ACTION_REPOSITORY_PATH }} ${{ inputs.deploy-branch }}:gh-pages
         cd ..
         git worktree remove ${{ inputs.temp-dir }} --force
 
