@@ -2,7 +2,7 @@ name: Component preview
 
 on:
   pull_request:
-    types: [openned, reopenned]
+    types: [openned, synchronize, reopenned]
   workflow_dispatch:
 
 permissions:
@@ -31,5 +31,6 @@ jobs:
         with:
           temp-dir: ghp-temp
           commands: |
-            cp -r preview/. ghp-temp/${{ github.ref_name.replaceAll('/', '-') }}
+            mkdir -p ghp-temp/preview/$(node -e "console.log('${{ github.head_ref }}'.replaceAll('/', '-'))")
+            cp -r preview/. ghp-temp/preview/$(node -e "console.log('${{ github.head_ref }}'.replaceAll('/', '-'))")    
             tree
