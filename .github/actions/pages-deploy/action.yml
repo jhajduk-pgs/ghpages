@@ -8,7 +8,7 @@ runs:
   using: 'composite'
 
   steps:
-    - run: echo "REPO_PATH=https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" >> $GITHUB_ENV
+    - run: echo "DEPLOY_ACTION_REPOSITORY_PATH=https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" >> $GITHUB_ENV
       shell: bash
 
     - name: Prepare environment for gh-pages deployment
@@ -18,7 +18,8 @@ runs:
         git config user.name "GH Pages Deployer"
         git config user.email "ghp-deployer@noreply.com"
         git remote rm origin
-        git remote add origin ${{ env.ACTION_REPOSITORY_PATH }}
+        echo ${{ env.DEPLOY_ACTION_REPOSITORY_PATH }}
+        git remote add origin ${{ env.DEPLOY_ACTION_REPOSITORY_PATH }}
         git fetch
         git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
 
@@ -27,7 +28,7 @@ runs:
       run: |
         echo ---------------------------------------------------------
         echo ---------------------------------------------------------
-        echo ${{ env.REPO_PATH }}
+        echo ${{ env.DEPLOY_ACTION_REPOSITORY_PATH }}
         echo ${{ env.HELLO }}
         echo ---------------------------------------------------------
         echo ---------------------------------------------------------
@@ -41,7 +42,7 @@ runs:
         git add --all .
         git checkout -b ${{ inputs.deploy-branch }}
         git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
-        git push --force ${{ env.ACTION_REPOSITORY_PATH }} ${{ inputs.deploy-branch }}:gh-pages
+        git push --force ${{ env.DEPLOY_ACTION_REPOSITORY_PATH }} ${{ inputs.deploy-branch }}:gh-pages
         cd ..
         git worktree remove ${{ inputs.temp-dir }} --force
 
