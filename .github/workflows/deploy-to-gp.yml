@@ -20,7 +20,9 @@ jobs:
 
     steps:
       - name: Dump github
-        run: echo "${{ fromJson(github) }}"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
       - name: Checkout 🛎️
         uses: actions/checkout@v3
