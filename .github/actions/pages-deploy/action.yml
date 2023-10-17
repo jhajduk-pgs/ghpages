@@ -12,40 +12,40 @@ runs:
     REPOSITORY_PATH: 'hello'
 
   steps:
-  - name: Dump github
-    env:
-      GITHUB_CONTEXT: ${{ toJson(github) }}
-    run: echo "$GITHUB_CONTEXT"
+    - name: Dump github
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
 
-  - name: Dump github
-    env:
-      GITHUB_ACTION: ${{ toJson(action) }}
-    run: echo "$GITHUB_ACTION"
+    - name: Dump github
+      env:
+        GITHUB_ACTION: ${{ toJson(action) }}
+      run: echo "$GITHUB_ACTION"
 
-  - name: Prepare environment for gh-pages deployment
-    run: |
-      git init 
-      git config user.name "GH Pages Deployer"
-      git config user.email "ghp-deployer@noreply.com"
-      git remote rm origin
-      git remote add origin ${{ env.REPOSITORY_PATH }}
-      git fetch
-      git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
+    - name: Prepare environment for gh-pages deployment
+      run: |
+        git init 
+        git config user.name "GH Pages Deployer"
+        git config user.email "ghp-deployer@noreply.com"
+        git remote rm origin
+        git remote add origin ${{ env.REPOSITORY_PATH }}
+        git fetch
+        git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
 
-  - name: Update main docs
-    run: ${{ inputs.commands }}
+    - name: Update main docs
+      run: echo hello
 
-  - name: Deploy updated pages to GH Pages
-    run: |
-      cd ${{ inputs.temp-dir }}
-      tree
-      git status --porcelain
-      git add --all .
-      git checkout -b ${{ inputs.deploy-branch }}
-      git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
-      git push --force ${{ env.REPOSITORY_PATH }} ${{ inputs.deploy-branch }}:gh-pages
-      cd ..
-      git worktree remove ${{ inputs.temp-dir }} --force
+    - name: Deploy updated pages to GH Pages
+      run: |
+        cd ${{ inputs.temp-dir }}
+        tree
+        git status --porcelain
+        git add --all .
+        git checkout -b ${{ inputs.deploy-branch }}
+        git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
+        git push --force ${{ env.REPOSITORY_PATH }} ${{ inputs.deploy-branch }}:gh-pages
+        cd ..
+        git worktree remove ${{ inputs.temp-dir }} --force
 
 inputs:
   commands:
