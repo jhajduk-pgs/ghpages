@@ -18,20 +18,13 @@ runs:
         git config user.name "GH Pages Deployer"
         git config user.email "ghp-deployer@noreply.com"
         git remote rm origin
-        echo ${{ env.DEPLOY_ACTION_REPOSITORY_PATH }}
         git remote add origin ${{ env.DEPLOY_ACTION_REPOSITORY_PATH }}
         git fetch
         git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
 
     - name: Update main docs
       shell: bash
-      run: |
-        echo ---------------------------------------------------------
-        echo ---------------------------------------------------------
-        echo ${{ env.DEPLOY_ACTION_REPOSITORY_PATH }}
-        echo ${{ env.HELLO }}
-        echo ---------------------------------------------------------
-        echo ---------------------------------------------------------
+      run: ${{ inputs.commands }}
 
     - name: Deploy updated pages to GH Pages
       shell: bash
