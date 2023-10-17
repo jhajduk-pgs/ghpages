@@ -13,6 +13,7 @@ runs:
     - env:
         REPO_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         HELLO: moto
+      shell: bash
 
     - name: Prepare environment for gh-pages deployment
       shell: bash
