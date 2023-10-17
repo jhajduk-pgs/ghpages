@@ -48,7 +48,7 @@ jobs:
           git config user.name "Jan Kaczan"
           git config user.email "jan@kaczan.eu"
           git remote rm origin
-          git remote add origin https://x-access-token:${{ github.token }}@$github.com/${{ github.repository }}.git ${{ github.workspace }}
+          git remote add origin https://x-access-token:${{ github.token }}@$github.com/${{ github.repository }}.git
           git fetch
           git worktree add --checkout ghp-temp origin/gh-pages
           ls -a
