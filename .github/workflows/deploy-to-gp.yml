@@ -19,13 +19,14 @@ jobs:
       DIST_PATH: /
       REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
       DEPLOY_BRANCH: gh-pages-deploy/${{ github.run_id }}-${{ github.run_attempt }}
+      BUILD_PATH: dist
+      GPH_TEMP_PATH: ghp-temp
 
     steps:
       - name: Dump github
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-
 
       - name: Checkout 🛎️
         uses: actions/checkout@v3
@@ -36,67 +37,42 @@ jobs:
       - name: Update dist path with version
         run: echo DIST_PATH=/v/${{ fromJson(steps.package_json.outputs.contents).version }} >> $GITHUB_ENV
 
-#      - name: Print id
-#        run: echo ${{ env.BUILD_ID }}
-
-      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+      - name: Install and build docs
         run: |
           npm ci
           npm run build
 
-      - name: Custom git fetch
+      - name: Prepare environment for gh-pages deployment
         run: |
           git init 
-          git config user.name "Jan Kaczan"
-          git config user.email "jan@kaczan.eu"
+          git config user.name "GH Pages Deployer"
+          git config user.email "ghp-deployer@noreply.com"
           git remote rm origin
           git remote add origin ${{ env.REPOSITORY_PATH }}
           git fetch
-          git worktree add --checkout ghp-temp origin/gh-pages
+          git worktree add --checkout ${{ env.GHP_TEMP }} origin/gh-pages
           ls -a
 
       - name: Update main docs
         run: |
-          rsync -q -av --checksum --progress dist/ ghp-temp --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
-          cp -r dist/. ghp-temp/${{ env.DIST_PATH }}
+          rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP }} --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+          cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP }}/${{ env.DIST_PATH }}
           tree
 
       - name: Update preview
         run: |
           echo siema
 
-      - name: Push to gh-pages
+      - name: Deploy updated pages to GH Pages
         run: |
-          tree
-          cd ghp-temp
+          cd ${{ env.GHP_TEMP }}
           tree
           git status --porcelain
-          
           git add --all .
           git checkout -b ${{ env.DEPLOY_BRANCH }}
           git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
           git push --force ${{ env.REPOSITORY_PATH }} ${{ env.DEPLOY_BRANCH }}:gh-pages
           cd ..
-          git worktree remove ghp-temp --force
-
-
-
-#      - name: Deploy 🚀
-#        uses: JamesIves/github-pages-deploy-action@v4
-#        with:
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          folder: dist # The folder the action should deploy.
-#          target-folder: ${{ env.DIST_PATH }}
-#          clean: true # Automatically remove deleted files from the deploy branch
-#          clean-exclude: '["v"]'
-#
-#      - name: Deploy 🚀
-#        uses: JamesIves/github-pages-deploy-action@v4
-#        with:
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          folder: dist # The folder the action should deploy.
-#          target-folder: /
-#          clean: true # Automatically remove deleted files from the deploy branch
-#          clean-exclude: '["v"]'
+          git worktree remove ${{ env.GHP_TEMP }} --force
 
 
