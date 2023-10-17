@@ -2,7 +2,7 @@ name: Component preview
 
 on:
   pull_request:
-    types: [openned, reopenned]
+    types: [openned, synchronize, reopenned]
   workflow_dispatch:
 
 permissions:
