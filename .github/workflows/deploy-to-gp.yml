@@ -71,7 +71,7 @@ jobs:
           git status --porcelain
           git add --all .
           git checkout -b ${{ env.DEPLOY_BRANCH }}
-          git commit -m "Deploying from ${{ env.GITHUB_REPOSITORY }} @ ${{ env.GITHUB_SHA }} --quiet --no-verify
+          git commit -m "Deploying from ${{ env.GITHUB_REPOSITORY }} @ ${{ env.GITHUB_SHA }}" --quiet --no-verify
           git push --force ${{ env.REPOSITORY_PATH }} ${{ env.DEPLOY_BRANCH }}:gh-pages
           cd ..
           git worktree remove ghp-temp --force
