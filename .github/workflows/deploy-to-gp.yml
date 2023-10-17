@@ -18,7 +18,7 @@ jobs:
       BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
       DIST_PATH: /
       REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
-      DEPLOY_BRANCH: gh-pages-deploy/${{ BUILD_ID }}
+      DEPLOY_BRANCH: gh-pages-deploy/${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
       - name: Dump github
