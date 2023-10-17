@@ -6,6 +6,9 @@ branding:
 
 runs:
   using: 'composite'
+  
+  env:
+    BIBO: 'hello'
 
   steps:
     - name: Dump github
