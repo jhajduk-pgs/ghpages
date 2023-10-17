@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Deploy docs
 on:
   push:
   workflow_dispatch:
@@ -8,7 +8,6 @@ permissions:
 
 jobs:
   build-and-deploy:
-#    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
@@ -17,7 +16,6 @@ jobs:
       DEPLOY_BRANCH: gh-pages-deploy/${{ github.run_id }}-${{ github.run_attempt }}
       BUILD_PATH: dist
       GHP_TEMP_PATH: ghp-temp
-      MODE: preview
 
     steps:
       - name: Dump github
@@ -31,53 +29,23 @@ jobs:
       - id: 'package_json'
         run: echo contents=$(cat package.json) >> $GITHUB_OUTPUT
 
-      - name: Update mode
-        if: ${{ github.ref_name === 'main' || github.ref_name === 'next' }}
-        run: echo MODE=docs >> $GITHUB_ENV
-
       - name: Update dist path with version
         run: echo DIST_PATH=/v/${{ fromJson(steps.package_json.outputs.contents).version }} >> $GITHUB_ENV
 
-      - name: Install and build docs
-        run: |
-          npm ci
-          npm run build
+#      - name: Install and build docs
+#        run: |
+#          npm ci
+#          npm run build:docs
 
-      - name: Prepare environment for gh-pages deployment
-        run: |
-          git init 
-          git config user.name "GH Pages Deployer"
-          git config user.email "ghp-deployer@noreply.com"
-          git remote rm origin
-          git remote add origin ${{ env.REPOSITORY_PATH }}
-          git fetch
-          git worktree add --checkout ${{ env.GHP_TEMP_PATH }} origin/gh-pages
-          ls -a
+      - name: Deploy
+        uses: ./.github/actions/pages-deploy
+        with:
+          commands: |
+            echo test
+            echo test 3
+            tree
 
-      - name: Update main docs
-        if: ${{ env.MODE === 'docs' }}
-        run: |
-          echo docs
-#          rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP_PATH }} --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+#      - name: Update main docs
+#        run: |
+#          rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP_PATH }} --delete --exclude v --exclude preview --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
 #          cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP_PATH }}/${{ env.DIST_PATH }}
-#          tree
-
-      - name: Update preview
-        if: ${{ env.MODE === 'preview' }}
-        run: |
-          echo preview
-
-      - name: Deploy updated pages to GH Pages
-        run: |
-          cd ${{ env.GHP_TEMP_PATH }}
-          tree
-          git status --porcelain
-          git add --all .
-          git checkout -b ${{ env.DEPLOY_BRANCH }}
-          git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
-          git push --force ${{ env.REPOSITORY_PATH }} ${{ env.DEPLOY_BRANCH }}:gh-pages
-          cd ..
-          git worktree remove ${{ env.GHP_TEMP_PATH }} --force
-        
-
-
