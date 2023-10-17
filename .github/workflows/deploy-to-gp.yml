@@ -23,7 +23,7 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
 
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v3
 
       - id: 'package_json'
@@ -38,7 +38,7 @@ jobs:
 #          npm run build:docs
 
       - name: Deploy
-        uses: ./.github/actions/pages-deploy
+        uses: ../actions/pages-deploy
         with:
           commands: |
             echo test

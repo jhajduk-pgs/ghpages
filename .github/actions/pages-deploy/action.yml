@@ -1,0 +1,50 @@
+name: Multiple deployu to GH Pages
+description: deploy with running some scripts meanwhile
+author: Jakub Hajduk <jakub.hajduk@xebia.com>
+branding:
+  color: 'purple'
+runs:
+  env:
+    REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+
+  using: composite
+
+  steps:
+  - name: Prepare environment for gh-pages deployment
+    run: |
+      git init 
+      git config user.name "GH Pages Deployer"
+      git config user.email "ghp-deployer@noreply.com"
+      git remote rm origin
+      git remote add origin ${{ env.REPOSITORY_PATH }}
+      git fetch
+      git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
+
+  - name: Update main docs
+    run: ${{ inputs.commands }}
+
+  - name: Deploy updated pages to GH Pages
+    run: |
+      cd ${{ inputs.temp-dir }}
+      tree
+      git status --porcelain
+      git add --all .
+      git checkout -b ${{ inputs.deploy-branch }}
+      git commit -m "Deploying @${{ github.sha }}" --quiet --no-verify --allow-empty
+      git push --force ${{ env.REPOSITORY_PATH }} ${{ inputs.deploy-branch }}:gh-pages
+      cd ..
+      git worktree remove ${{ inputs.temp-dir }} --force
+
+inputs:
+  commands:
+    description: Commands to run after fetching gh-pages branch
+    required: true
+    default: echo 'No commands!'
+  temp-dir:
+    description: name of the temporary directory
+    required: true
+    default: 'ghp-temp'
+  deploy-branch:
+    description: "Branch to deploy. (defalut: gh-pages)"
+    required: true
+    default: 'gh-pages'
