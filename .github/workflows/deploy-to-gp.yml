@@ -71,6 +71,7 @@ jobs:
           cd ghp-temp
           tree
           git status --porcelain
+          
           git add --all .
           git checkout -b ${{ env.DEPLOY_BRANCH }}
           git commit -m "Deploying from ${{ env.GITHUB_REPOSITORY }} @ ${{ env.GITHUB_SHA }}" --quiet --no-verify
