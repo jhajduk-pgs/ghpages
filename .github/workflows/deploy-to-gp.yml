@@ -44,7 +44,7 @@ jobs:
           git init 
           git config user.name "Jan Kaczan"
           git config user.email "jan@kaczan.eu"
-          git remote remove origin
+          git remote rm origin
           git remote add git@github.com:jhajduk-pgs/ghpages.git
           git fetch
           git worktree add --checkout ghp-temp origin/gh-pages
