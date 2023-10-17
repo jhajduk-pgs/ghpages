@@ -31,5 +31,6 @@ jobs:
         with:
           temp-dir: ghp-temp
           commands: |
+            mkdir -p ghp-temp/preview/$(node -e "console.log('${{ github.head_ref }}'.replaceAll('/', '-'))")
             cp -r preview/. ghp-temp/preview/$(node -e "console.log('${{ github.head_ref }}'.replaceAll('/', '-'))")    
             tree
