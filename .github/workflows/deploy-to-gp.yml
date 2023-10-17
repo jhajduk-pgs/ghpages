@@ -56,10 +56,12 @@ jobs:
       - name: Update main docs
         run: |
           rsync -q -av --checksum --progress dist ghp-temp --delete --exclude v --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
-          cp dist ghp-temp/${{ env.DIST_PATH }}
+          cp -r dist ghp-temp/${{ env.DIST_PATH }}
           ls -a
+          echo 'list ghp-temp'
           cd ghp-temp
           ls -a
+          echo 'list ghp-temp/v'
           cd v
           ls -a
           
