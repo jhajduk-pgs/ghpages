@@ -17,7 +17,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - id: pkg
+      - name: Get package.json data
+        id: pkg
         uses: ./.github/actions/package-json
 
       - run: echo ${{ fromJson(steps.pkg.outputs.contents).version }}

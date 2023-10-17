@@ -8,8 +8,9 @@ runs:
   using: 'composite'
 
   steps:
-    - id: 'package_json'
+    - name: Get data
       run: echo contents=$(cat package.json) >> $GITHUB_OUTPUT
+      shell: bash
 
 outputs:
   contents: ''
