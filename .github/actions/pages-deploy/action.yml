@@ -5,7 +5,7 @@ branding:
   color: 'purple'
 
 runs:
-  using: composite
+  using: 'composite'
 
   env:
 #    REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
