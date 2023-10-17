@@ -5,11 +5,11 @@ branding:
   color: 'purple'
 
 runs:
+  using: composite
+
   env:
 #    REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
     REPOSITORY_PATH: 'hello'
-
-  using: composite
 
   steps:
   - name: Dump github
