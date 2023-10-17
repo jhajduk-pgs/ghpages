@@ -10,11 +10,9 @@ runs:
   using: 'composite'
 
   steps:
-    - name: setup variables
-      shell: bash
-      env:
-        PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
-      run: echo repository_path=$PATH >> $GITHUB_ENV
+    - env:
+        REPO_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        HELLO: moto
 
     - name: Prepare environment for gh-pages deployment
       shell: bash
@@ -29,7 +27,13 @@ runs:
 
     - name: Update main docs
       shell: bash
-      run: echo ${{ env.repository_path }}
+      run: |
+        echo ---------------------------------------------------------
+        echo ---------------------------------------------------------
+        echo ${{ env.REPO_PATH }}
+        echo ${{ env.HELLO }}
+        echo ---------------------------------------------------------
+        echo ---------------------------------------------------------
 
     - name: Deploy updated pages to GH Pages
       shell: bash
