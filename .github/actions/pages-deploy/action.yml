@@ -3,13 +3,25 @@ description: deploy with running some scripts meanwhile
 author: Jakub Hajduk <jakub.hajduk@xebia.com>
 branding:
   color: 'purple'
+
 runs:
   env:
-    REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+#    REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+    REPOSITORY_PATH: 'hello'
 
   using: composite
 
   steps:
+  - name: Dump github
+    env:
+      GITHUB_CONTEXT: ${{ toJson(github) }}
+    run: echo "$GITHUB_CONTEXT"
+
+  - name: Dump github
+    env:
+      GITHUB_ACTION: ${{ toJson(action) }}
+    run: echo "$GITHUB_ACTION"
+
   - name: Prepare environment for gh-pages deployment
     run: |
       git init 
