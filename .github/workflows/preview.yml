@@ -28,7 +28,8 @@ jobs:
       - name: Deploy
         uses: ./.github/actions/pages-deploy
         with:
-          temp-dir: ${{ env.GHP_TEMP_PATH }}
+          temp-dir: ghp-temp
           commands: |
             cp -r preview/. ghp-temp/${{ github.ref_name }}
+            tree
 
