@@ -10,42 +10,24 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-      DIST_PATH: /
-      REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
-      DEPLOY_BRANCH: gh-pages-deploy/${{ github.run_id }}-${{ github.run_attempt }}
+      PACKAGE_JSON: contents=$(cat package.json) >> $GITHUB_OUTPUT
+      DIST_PATH: /v/${{ fromJson(steps.package_json.outputs.contents).version }}
       BUILD_PATH: dist
       GHP_TEMP_PATH: ghp-temp
 
     steps:
-      - name: Dump github
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - name: Checkout
         uses: actions/checkout@v4
 
-      - id: 'package_json'
-        run: echo contents=$(cat package.json) >> $GITHUB_OUTPUT
-
-      - name: Update dist path with version
-        run: echo DIST_PATH=/v/${{ fromJson(steps.package_json.outputs.contents).version }} >> $GITHUB_ENV
-
-#      - name: Install and build docs
-#        run: |
-#          npm ci
-#          npm run build:docs
+      - name: Install and build docs
+        run: |
+          npm ci
+          npm run build:docs
 
       - name: Deploy
         uses: ./.github/actions/pages-deploy
         with:
+          temp-dir: ${{ env.GHP_TEMP_PATH }}
           commands: |
-            echo test
-            echo test 3
-            tree
-
-#      - name: Update main docs
-#        run: |
-#          rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP_PATH }} --delete --exclude v --exclude preview --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
-#          cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP_PATH }}/${{ env.DIST_PATH }}
+            rsync -q -av --checksum --progress ${{ env.BUILD_PATH }}/ ${{ env.GHP_TEMP_PATH }} --delete --exclude v --exclude preview --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+            cp -r ${{ env.BUILD_PATH }}/. ${{ env.GHP_TEMP_PATH }}/${{ env.DIST_PATH }}

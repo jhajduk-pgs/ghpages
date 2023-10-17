@@ -11,7 +11,7 @@ runs:
     - run: echo "DEPLOY_ACTION_REPOSITORY_PATH=https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" >> $GITHUB_ENV
       shell: bash
 
-    - name: Prepare environment for gh-pages deployment
+    - name: Prepare environment
       shell: bash
       run: |
         git init 
@@ -22,11 +22,11 @@ runs:
         git fetch
         git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
 
-    - name: Update main docs
+    - name: Run commands
       shell: bash
       run: ${{ inputs.commands }}
 
-    - name: Deploy updated pages to GH Pages
+    - name: Deploy changes
       shell: bash
       run: |
         cd ${{ inputs.temp-dir }}
