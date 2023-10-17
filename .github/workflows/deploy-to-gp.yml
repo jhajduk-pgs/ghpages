@@ -38,8 +38,7 @@ jobs:
 #          npm run build:docs
 
       - name: Deploy
-        run: tree
-        uses: ./github/actions/pages-deploy
+        uses: ./.github/actions/pages-deploy
         with:
           commands: |
             echo test
