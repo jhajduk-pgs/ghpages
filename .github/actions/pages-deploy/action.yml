@@ -7,22 +7,21 @@ branding:
 runs:
   using: 'composite'
 
-  env:
-#    REPOSITORY_PATH: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
-    REPOSITORY_PATH: 'hello'
-
   steps:
     - name: Dump github
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
+      shell: bash
       run: echo "$GITHUB_CONTEXT"
 
     - name: Dump github
       env:
         GITHUB_ACTION: ${{ toJson(action) }}
+      shell: bash
       run: echo "$GITHUB_ACTION"
 
     - name: Prepare environment for gh-pages deployment
+      shell: bash
       run: |
         git init 
         git config user.name "GH Pages Deployer"
@@ -33,9 +32,11 @@ runs:
         git worktree add --checkout ${{ inputs.temp-dir }} origin/gh-pages
 
     - name: Update main docs
+      shell: bash
       run: echo hello
 
     - name: Deploy updated pages to GH Pages
+      shell: bash
       run: |
         cd ${{ inputs.temp-dir }}
         tree
