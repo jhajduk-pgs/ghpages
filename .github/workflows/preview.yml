@@ -3,7 +3,6 @@ name: Component preview
 on:
   pull_request:
     types: [openned, synchronize, reopenned]
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -41,17 +40,8 @@ jobs:
             cp -r preview/. ghp-temp/preview/${{ env.PREVIEW_DIRNAME }}
             tree
 
-      - name: Find Comment
-        uses: peter-evans/find-comment@v2
-        id: fc
+      - name: Add comment with link
+        uses: ./.github/actions/comment
         with:
-          issue-number: ${{ github.event.number }}
-          body-includes: ":sparkles: :sparkles: :sparkles:"
-
-      - name: Create comment with link
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.number }}
-          edit-mode: replace
-          body: ":sparkles: :sparkles: :sparkles: [New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ env.PREVIEW_DIRNAME }}/index.html) for this branch has been created."
+          prefix: ghp-temp
+          body: "[New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ env.PREVIEW_DIRNAME }}/index.html) for this branch has been created."

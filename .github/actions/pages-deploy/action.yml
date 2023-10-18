@@ -1,4 +1,4 @@
-name: Multiple deploy to GH Pages
+name: Deploy
 description: deploy with running some scripts meanwhile
 author: Jakub Hajduk <jakub.hajduk@xebia.com>
 branding:
