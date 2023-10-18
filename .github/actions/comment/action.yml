@@ -1,0 +1,42 @@
+name: Comment
+description: Add comment to pr.
+author: Jakub Hajduk <jakub.hajduk@xebia.com>
+branding:
+  color: 'purple'
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Find Comment
+      uses: peter-evans/find-comment@v2
+      id: fc
+      with:
+        issue-number: ${{ github.event.number }}
+        body-includes: ${{ inputs.prefix }}
+
+    - name: Create comment with link
+      uses: peter-evans/create-or-update-comment@v3
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ github.event.number }}
+        edit-mode: replace
+        body: |
+          ${{ inputs.prefix }}
+          ${{ inputs.body }}
+
+inputs:
+  body:
+    description: Comment body to add
+    required: true
+    default: "New comment"
+
+  prefix:
+    description: name of the temporary directory
+    required: true
+    default: ":sparkles:"
+
+outputs:
+  comment-id:
+    description: Comment id
+    value: ${{ steps.fc.outputs.comment-id }}

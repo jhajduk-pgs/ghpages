@@ -1,4 +1,4 @@
-name: package.json info
+name: Pkg
 description: Fetch data from package.json file
 author: Jakub Hajduk <jakub.hajduk@xebia.com>
 branding:

@@ -3,14 +3,16 @@ name: Component preview
 on:
   pull_request:
     types: [openned, synchronize, reopenned]
-  workflow_dispatch:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    env:
+      PREVIEW_DIRNAME: ''
 
     steps:
       - name: Dump github
@@ -18,8 +20,11 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
 
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
+      - name: Update preview dirname
+        run: echo "PREVIEW_DIRNAME=$(echo '${{ github.head_ref }}' | sed 's/\//-/g')" >> $GITHUB_ENV
+
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
 
       - name: Install and build docs
         run: |
@@ -31,6 +36,12 @@ jobs:
         with:
           temp-dir: ghp-temp
           commands: |
-            mkdir -p ghp-temp/preview/$(node -e "console.log('${{ github.head_ref }}'.replaceAll('/', '-'))")
-            cp -r preview/. ghp-temp/preview/$(node -e "console.log('${{ github.head_ref }}'.replaceAll('/', '-'))")    
+            mkdir -p ghp-temp/preview/${{ env.PREVIEW_DIRNAME }}
+            cp -r preview/. ghp-temp/preview/${{ env.PREVIEW_DIRNAME }}
             tree
+
+      - name: Add comment with link
+        uses: ./.github/actions/comment
+        with:
+          prefix: ":sparkles: :sparkles: :sparkles:"
+          body: "[New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ env.PREVIEW_DIRNAME }}/index.html) for this branch has been created."
