@@ -12,12 +12,17 @@ permissions:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    env:
+      PREVIEW_DIRNAME: ''
 
     steps:
       - name: Dump github
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+
+      - name: Update preview dirname
+        run: echo "PREVIEW_DIRNAME=$(echo '${{ github.head_ref }}' | sed 's/\//-/g')" >> $GITHUB_ENV
 
       - name: Checkout 🛎
         uses: actions/checkout@v4
@@ -26,20 +31,20 @@ jobs:
         run: |
           npm ci
           npm run build:preview
+          
 
       - name: Deploy
-        id: deploy
         uses: ./.github/actions/pages-deploy
         with:
           temp-dir: ghp-temp
           commands: |
-            echo "dirname=$(echo '${{ github.head_ref }}' | sed 's/\//-/g')" >> $GITHUB_OUTPUT
-            mkdir -p ghp-temp/preview/$(echo '${{ github.head_ref }}' | sed 's/\//-/g')
-            cp -r preview/. ghp-temp/preview/$(echo '${{ github.head_ref }}' | sed 's/\//-/g')
+            echo ${{ env.PREVIEW_DIRNAME }}
+            mkdir -p ghp-temp/preview/${{ env.PREVIEW_DIRNAME }}
+            cp -r preview/. ghp-temp/preview/${{ env.PREVIEW_DIRNAME }}
             tree
 
       - name: Create comment with link
         uses: peter-evans/create-or-update-comment@v3
         with:
-          issue-number: ${{ github.event.number }}
-          body: ":sparkles: [New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ steps.deploy.outputs.driname }}/index.html) for this branch has been created."
+          comment-id: ${{ github.event.comment.id }}
+          body: ":sparkles: [New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ ${{ env.PREVIEW_DIRNAME }} }}/index.html) for this branch has been created."
