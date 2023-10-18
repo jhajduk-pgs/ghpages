@@ -36,7 +36,6 @@ inputs:
     required: true
     default: ":sparkles:"
 
-
 outputs:
   comment-id:
     description: Comment id
