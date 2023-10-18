@@ -8,10 +8,6 @@ runs:
   using: 'composite'
 
   steps:
-    - name: Update preview dirname
-      run: echo "PREVIEW_DIRNAME=$(echo '${{ github.head_ref }}' | sed 's/\//-/g')" >> $GITHUB_ENV
-      shell: bash
-
     - name: Find Comment
       uses: peter-evans/find-comment@v2
       id: fc
