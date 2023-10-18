@@ -38,7 +38,7 @@ inputs:
   prefix:
     description: name of the temporary directory
     required: true
-    default: ":sparkles: :sparkles: :sparkles:"
+    default: ":sparkles:"
 
 
 outputs:

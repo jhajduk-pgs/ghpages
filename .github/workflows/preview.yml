@@ -43,6 +43,7 @@ jobs:
       - name: Add comment with link
         uses: ./.github/actions/comment
         with:
-          prefix: ghp-temp
-          body: "Hello there!"
-#          body: "[New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ env.PREVIEW_DIRNAME }}/index.html) for this branch has been created."
+          prefix: ":sparkles: :sparkles: :sparkles:"
+          body: |
+            [New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ env.PREVIEW_DIRNAME }}/index.html) for this branch has been created.
+            :sparkles: Other thing
