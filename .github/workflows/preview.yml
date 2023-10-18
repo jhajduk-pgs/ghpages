@@ -43,14 +43,14 @@ jobs:
 
       - name: Find Comment
         uses: peter-evans/find-comment@v2
-        id: find-comment
+        id: fc
         with:
           issue-number: ${{ github.event.number }}
-          body-includes: ":sparkles: New preview link for this branch has been created."
+          body-includes: ":sparkles:"
 
       - name: Create comment with link
         uses: peter-evans/create-or-update-comment@v3
         with:
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
           edit-mode: replace
           body: ":sparkles: [New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ env.PREVIEW_DIRNAME }}/index.html) for this branch has been created."
