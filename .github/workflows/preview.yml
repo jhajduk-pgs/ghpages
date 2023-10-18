@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Dump github
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
       - name: Checkout 🛎
         uses: actions/checkout@v4
 
@@ -22,10 +27,17 @@ jobs:
           npm run build:preview
 
       - name: Deploy
+        id: deploy
         uses: ./.github/actions/pages-deploy
         with:
           temp-dir: ghp-temp
-          commands: | 
-            mkdir -p ghp-temp/preview/$(node -e "console.log('${{ github.head_ref }}'.replaceAll('/', '-'))")
-            cp -r preview/. ghp-temp/preview/$(node -e "console.log('${{ github.head_ref }}'.replaceAll('/', '-'))")
+          commands: |
+            echo dirname=$(echo '${{ github.head_ref }}' | sed 's/\//-/g') >> $GITHUB_OUTPUT
+            mkdir -p ghp-temp/preview/$(echo '${{ github.head_ref }}' | sed 's/\//-/g')
+            cp -r preview/. ghp-temp/preview/$(echo '${{ github.head_ref }}' | sed 's/\//-/g')
             tree
+
+      - name: Create comment with link
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          body: ":sparkles: [New preview link](https://${{ github.repository_owner }}.github.io/${{ github.repository }}/preview/${{ steps.deploy.outputs.driname }}/index.html) for this branch has been created."
