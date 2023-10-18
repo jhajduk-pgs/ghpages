@@ -31,7 +31,6 @@ jobs:
         run: |
           npm ci
           npm run build:preview
-          
 
       - name: Deploy
         uses: ./.github/actions/pages-deploy
@@ -46,5 +45,6 @@ jobs:
       - name: Create comment with link
         uses: peter-evans/create-or-update-comment@v3
         with:
-          comment-id: ${{ github.event.comment.id }}
+          comment-id: 1767985720
+          edit-mode: replace
           body: ":sparkles: [New preview link](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/${{ env.PREVIEW_DIRNAME }}/index.html) for this branch has been created."
